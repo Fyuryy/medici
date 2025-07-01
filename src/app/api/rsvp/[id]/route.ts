@@ -2,14 +2,27 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
-export async function GET(
-  _req: Request,
-  context: { params: { id: string } }
-) {
-  // await the params promise before destructuring
-  const { id } = await context.params
+interface ContextParams {
+  params: {
+    id: string
+  }
+}
 
-  const { data, error } = await supabaseAdmin
+interface Invitation {
+  email: string
+  phone: string
+  used: boolean
+}
+
+interface SupabaseResponse {
+  data: Invitation | null
+  error: { message: string } | null
+}
+
+export async function GET(request: Request, context: ContextParams): Promise<NextResponse> {
+  // context.params exists and has your dynamic segments
+  const id = context.params.id
+  const { data, error }: SupabaseResponse = await supabaseAdmin
     .from('invitations')
     .select('email, phone, used')
     .eq('id', id)
