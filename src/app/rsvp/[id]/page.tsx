@@ -17,7 +17,7 @@ export default function RSVPPage() {
   const [error, setError] = useState('')
 
   const [rsvpDone, setRsvpDone] = useState(false)
-  const [userId, setUserId] = useState<string | null>(null)
+  const [, setUserId] = useState<string | null>(null)
   const [rsvpError, setRsvpError] = useState('')
 
   // 1) Fetch invitation

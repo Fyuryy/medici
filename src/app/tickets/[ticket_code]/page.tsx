@@ -36,7 +36,7 @@ export default async function TicketPage({ params: { ticket_code } }: Props) {
   // 3a) If you prefer an inline QR.svg, use react-qr-code:
   return (
     <div style={{ textAlign: 'center', margin: '2rem' }}>
-      <h1>Here's your ticket, {user?.name}</h1>
+      <h1>Here&apos;s your ticket, {user?.name}</h1>
 
       <div
         style={{
