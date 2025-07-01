@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.logo {
+  max-width: 100%;
+  height: auto;
+  display: block; /* prevents inline whitespace issues */
+  margin: 0 auto; /* center if needed */
+}

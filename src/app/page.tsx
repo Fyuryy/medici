@@ -1,111 +1,108 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
-import Countdown from 'react-countdown'
 
-export default function Page() {
-  const searchParams = useSearchParams()
-  const token = searchParams.get('t') || ''
-  const [invited, setInvited] = useState<{
-    invited_name: string
-    email: string
-  } | null>()
-  const [submitted, setSubmitted] = useState(false)
+import Image from 'next/image'
+import '../styles/globals.css'
+import Link from 'next/link'
+import Countdown from '@/components/Countdown'
 
-  // Fetch invitation server-side on mount
-  useEffect(() => {
-    async function loadInvite() {
-      const res = await fetch(`/api/rsvp?token=${token}`)
-      const json = await res.json()
-      setInvited(res.ok ? json.invited : null)
-    }
-    if (token) loadInvite()
-  }, [token])
+// Dynamically load react-countdown so that it only renders on the client
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const form = new FormData(e.target as HTMLFormElement)
-    const data = Object.fromEntries(form.entries())
-    const res = await fetch('/api/rsvp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, ...data }),
-    })
-    if (res.ok) setSubmitted(true)
-  }
-
-  if (invited === undefined) return <p>Chargement…</p>
-  if (!invited) return <p>Invitation introuvable.</p>
-  if (submitted) return <p>Merci ! Votre présence est confirmée.</p>
+export default function HomePage() {
+  const eventDate = new Date('2025-08-22T19:00:00')
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      <h1 className="text-3xl font-semibold mb-4 text-center">
-        Inauguration de MEDICI à la Tour Bel-Air
-      </h1>
-      <Countdown date={new Date('2025-08-22T19:00:00')} />
+    <>
+      {process.env.NODE_ENV === 'development' && (
+        <div className="testBox">
+          <div>
+            <p>Development Mode: This is a test page.</p>
+            <Link href="admin/scan">Scan a ticket</Link>
+            <br />
+            <Link href="admin/send-invite">Send Invite</Link>
+          </div>
+        </div>
+      )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 w-full max-w-md bg-white p-6 rounded-lg shadow"
-      >
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Prénom</label>
-          <input
-            name="firstName"
-            required
-            className="mt-1 w-full border p-2 rounded"
-          />
+      <div className="container">
+        <div>
+          <div className="logo">
+            <Image
+              src="/LOGOTYPO_MEDICI_NOIR.jpg"
+              alt="MEDICI Logo"
+              className="logo"
+              width={722}
+              height={153}
+              priority
+            />
+          </div>
+
+          <h1 className="title">Inauguration de MEDICI</h1>
+
+          <div className="countdown">
+            <Countdown date={eventDate} />
+          </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Nom</label>
-          <input
-            name="lastName"
-            required
-            className="mt-1 w-full border p-2 rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            required
-            className="mt-1 w-full border p-2 rounded"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Téléphone</label>
-          <input name="phone" className="mt-1 w-full border p-2 rounded" />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Date de naissance</label>
-          <input
-            type="date"
-            name="dob"
-            className="mt-1 w-full border p-2 rounded"
-          />
-        </div>
-        <div className="mb-4 flex items-center">
-          <input
-            type="checkbox"
-            name="consent"
-            id="consent"
-            className="mr-2"
-            required
-          />
-          <label htmlFor="consent" className="text-sm">
-            J’accepte qu’on me filme et que ces images soient utilisées à des
-            fins commerciales
-          </label>
-        </div>
-        <button
-          type="submit"
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded"
-        >
-          Je confirme ma présence
-        </button>
-      </form>
-    </div>
+      </div>
+
+      <style jsx>{`
+        .container {
+          display: flex;
+          justify-content: center;
+          padding: 2rem;
+        }
+        .card {
+          border: 1px solid #e5e7eb;
+          background-color: #ffffff;
+          border-radius: 16px;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+            0 4px 6px -4px rgba(0, 0, 0, 0.1);
+          padding: 32px;
+          max-width: 448px;
+          width: 100%;
+          flex-direction: column;
+          align-items: center;
+          display: flex;
+        }
+        .logo {
+          flex-shrink: 0;
+        }
+        .title {
+          margin-top: 24px;
+          font-size: 30px;
+          font-family: sans-serif;
+          color: #1f2937;
+          text-align: center;
+        }
+        .testBox {
+          background-color: #ef4444;
+          padding: 16px;
+          color: #ffffff;
+          margin-top: 16px;
+        }
+        .subtitle {
+          margin-top: 24px;
+          font-size: 30px;
+          font-family: sans-serif;
+          color: #1f2937;
+        }
+        .countdown {
+          margin-top: 16px;
+          font-size: 20px;
+          color: #4b5563;
+          text-align: center;
+        }
+        @media (min-width: 768px) {
+          .title {
+            font-size: 48px;
+          }
+          .subtitle {
+            font-size: 48px;
+          }
+          .countdown {
+            font-size: 30px;
+          }
+        }
+      `}</style>
+    </>
   )
 }

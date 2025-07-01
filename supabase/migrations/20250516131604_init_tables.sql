@@ -2,12 +2,11 @@
 
 create table public.invitations (
   id           uuid        primary key default gen_random_uuid(),
-  token        text        unique not null,
-  invited_name text        not null,
   email        text        not null,
   phone        text,
   dob          date,
   created_at   timestamp   default now()
+  used boolean not null default false,
 );
 
 create table public.rsvps (
