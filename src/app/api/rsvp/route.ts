@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       email?: string
     } = await request.json()
 
-    const missing = []
+    const missing: string[] = []
     if (!invitation_id) missing.push('invitation_id')
     if (consent === undefined) missing.push('consent')
     if (!name) missing.push('name')

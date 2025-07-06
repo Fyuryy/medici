@@ -6,9 +6,10 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export async function GET(
   request: Request,
-  {params}: {params: {id: string} }
+  ctx,
 ) {
-  const {id} = params
+  
+  const { id } = ctx.params
   if (!id) {
     return NextResponse.json(
       { error: 'Missing invitation id' },

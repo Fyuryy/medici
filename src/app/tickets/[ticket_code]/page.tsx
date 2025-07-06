@@ -3,11 +3,8 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import QRCodeReact from 'react-qr-code' // for on-page QR
 import { notFound } from 'next/navigation'
 
-interface Props {
-  params: { ticket_code: string }
-}
-
-export default async function TicketPage({ params: { ticket_code } }: Props) {
+export default async function TicketPage({ params }) {
+  const { ticket_code } = params
   // 1) Fetch with the service role key (ignores RLS)
   const { data: ticket, error } = await supabaseAdmin
     .from('tickets')
@@ -19,15 +16,14 @@ export default async function TicketPage({ params: { ticket_code } }: Props) {
     return notFound() // shows your 404 page
   }
 
-  const {data: user} = await supabaseAdmin
+  const { data: user } = await supabaseAdmin
     .from('users')
     .select('name')
     .eq('id', ticket.user_id)
     .single()
-  
-    if (!user) {
-      
-    }
+
+  if (!user) {
+  }
 
   // 2) Build the URL that you want the QR to encode
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
@@ -48,9 +44,7 @@ export default async function TicketPage({ params: { ticket_code } }: Props) {
       >
         <QRCodeReact value={ticketLink} size={256} />
       </div>
-      <p>
-        This QR code was sent to you via email. 
-      </p>
+      <p>This QR code was sent to you via email.</p>
     </div>
   )
 }
