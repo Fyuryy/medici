@@ -1,12 +1,25 @@
 // src/app/api/rsvp/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
+
+type Context = {
+  params: {
+    id: string
+  }
+}
+
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  ctx: Context,
 ) {
-  const { id } = params
+  const {id} = ctx.params
+  if (!id) {
+    return NextResponse.json(
+      { error: 'Missing invitation id' },
+      { status: 400 }
+    )
+  }
 
   const { data, error } = await supabaseAdmin
     .from('invitations')
