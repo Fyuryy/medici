@@ -3,17 +3,12 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 
-type Context = {
-  params: {
-    id: string
-  }
-}
 
 export async function GET(
   request: Request,
-  ctx: Context,
+  {params}: {params: {id: string} }
 ) {
-  const {id} = ctx.params
+  const {id} = params
   if (!id) {
     return NextResponse.json(
       { error: 'Missing invitation id' },
