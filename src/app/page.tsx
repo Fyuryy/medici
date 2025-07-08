@@ -12,16 +12,12 @@ export default function HomePage() {
 
   return (
     <>
-      {process.env.NODE_ENV === 'development' && (
-        <div className="testBox">
-          <div>
-            <p>Development Mode: This is a test page.</p>
-            <Link href="admin/scan">Scan a ticket</Link>
-            <br />
-            <Link href="admin/send-invite">Send Invite</Link>
-          </div>
+      <div className="testBox">
+        <div>
+          <p>Admin Page:</p>
+          <Link href="/admin">Go to Admin Panel</Link>
         </div>
-      )}
+      </div>
 
       <div className="container">
         <div>
@@ -77,7 +73,7 @@ export default function HomePage() {
           background-color: #ef4444;
           padding: 16px;
           color: #ffffff;
-          margin-top: 16px;
+          margin-bottom: 16px;
         }
         .subtitle {
           margin-top: 24px;

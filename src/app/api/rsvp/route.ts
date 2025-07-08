@@ -88,13 +88,14 @@ export async function POST(request: Request) {
     // 5) Create the user record immediately 
     const { data: user, error: userErr } = await supabaseAdmin
       .from('users')
-      .insert({
+      .upsert({
         rsvp_id:       rsvp.id,
         name,
         email:         emailToUse,
         phone:         phone || invite.phone || null,
         date_of_birth: birthdate,
-      })
+        is_admin: false,
+      }, { onConflict: 'email' })
       .select('id')
       .single()
 
