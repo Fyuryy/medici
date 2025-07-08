@@ -12,12 +12,14 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="testBox">
-        <div>
-          <p>Admin Page:</p>
-          <Link href="/admin">Go to Admin Panel</Link>
+      {process.env.NODE_ENV === 'development' && (
+        <div className="testBox">
+          <div>
+            <p>Admin Page:</p>
+            <Link href="/admin">Go to Admin Panel</Link>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="container">
         <div>
