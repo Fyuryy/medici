@@ -1,6 +1,7 @@
 // src/app/admin/send-invite/page.tsx
 'use client'
 
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { useState, FormEvent } from 'react'
 
 export default function SendInvitePage() {
@@ -18,28 +19,40 @@ export default function SendInvitePage() {
     setInviteId(null)
 
     try {
+      // 1) get the current session
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabaseAdmin.auth.getSession()
+
+      if (sessionError || !session) {
+        throw new Error('You must be signed in')
+      }
+
+      // 2) call your API with the Authorization header
       const res = await fetch('/api/send-invite', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          event_id: process.env.NEXT_PUBLIC_EVENT_ID,
-          invited_name: name,
-          email,
-          phone,
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        // only send what your API expects: email and phone
+        body: JSON.stringify({ email, phone }),
       })
+
       const payload = await res.json()
       if (!res.ok) {
-        throw new Error(payload.error || 'Failed to send invitation')
+        throw new Error(payload.error || res.statusText)
       }
+
       setInviteId(payload.id)
       setMessage('Invitation created!')
     } catch (err) {
-      if (err instanceof Error) {
-        setMessage(`Error: ${err.message}`)
-      } else {
-        setMessage('An unexpected error occurred')
-      }
+      setMessage(
+        err instanceof Error
+          ? `Error: ${err.message}`
+          : 'An unexpected error occurred'
+      )
     } finally {
       setLoading(false)
     }
