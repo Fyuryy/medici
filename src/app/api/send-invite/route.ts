@@ -1,5 +1,5 @@
 // src/app/api/send-invite/route.ts
-import { cookies } from 'next/headers'
+import {parse} from 'cookie'
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
@@ -7,14 +7,19 @@ import { sendEmail } from '@/utils/email'
 import { sendSms } from '@/utils/sms'
 
 export async function POST(request: Request) {
-  // 1. Build the client manually
-  const cookieStore = cookies()
-  const accessToken = (await cookieStore).get('sb-access-token')?.value || (await cookieStore).get('supabase-access-token')?.value
+  // ───────────────────────────────────────────────────────────────────────────────
+  // 1) grab the raw cookie header and parse it
+  const cookieHeader = request.headers.get('cookie') || ''
+  const parsed = parse(cookieHeader)
+  const accessToken =
+    parsed['sb-access-token'] ||
+    parsed['supabase-access-token']
 
   if (!accessToken) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  // 2) now build your client as before
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
