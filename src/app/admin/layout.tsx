@@ -35,7 +35,7 @@ export default function AdminLayout({
                   <Link href="/admin/events">Events</Link>
                 </li>
                 <li>
-                  <Link href="/admin/invite">Invites</Link>
+                  <Link href="/admin/send-invite">Invites</Link>
                 </li>
                 <li>
                   <Link href="/admin/scan">Scan</Link>
