@@ -50,6 +50,8 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
+
+    console.log("invitation_id:",invite.id, "Email:", invite.email, "Phone:", invite.phone, "Used:", invite.used)
     if (invite.used) {
       return NextResponse.json(
         { error: 'This invitation has already been used.' },
@@ -76,6 +78,9 @@ export async function POST(request: Request) {
 
 
 
+
+
+
     // 4) Determine which email to register
     const emailToUse = formEmail?.trim() || invite.email
     if (!emailToUse) {
@@ -85,25 +90,29 @@ export async function POST(request: Request) {
       )
     }
 
-    // 5) Create the user record immediately 
-    const { data: user, error: userErr } = await supabaseAdmin
-      .from('users')
-      .upsert({
-        rsvp_id:       rsvp.id,
+    // after upserting into "rsvps"
+const invitationId = invitation_id; // the UUID from invitations
+
+  const { data: user, error: userErr } = await supabaseAdmin
+    .from('users')
+    .upsert(
+      {
+        rsvp_id: invitationId, 
         name,
-        email:         emailToUse,
-        phone:         phone || invite.phone || null,
+        email: emailToUse,
+        phone: phone || invite.phone || null,
         date_of_birth: birthdate,
-        is_admin: false,
-      }, { onConflict: 'email' })
-      .select('id')
-      .single()
+      },
+      { onConflict: 'email' }
+    )
+    .select('id')
+    .single()
 
     
     if (userErr || !user) {
       console.error('Error creating user:', userErr)
       return NextResponse.json(
-        { error: 'Failed to create user.' },
+        { error: userErr?.message || 'Failed to create user.' },
         { status: 500 }
       )
     }
