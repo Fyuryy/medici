@@ -1,7 +1,7 @@
 // src/app/admin/send-invite/page.tsx
 'use client'
 
-import { supabaseAdmin } from '@/lib/supabaseAdmin'
+import { supabaseClient } from '@/lib/supabaseClient'
 import { useState, FormEvent } from 'react'
 
 export default function SendInvitePage() {
@@ -23,7 +23,7 @@ export default function SendInvitePage() {
       const {
         data: { session },
         error: sessionError,
-      } = await supabaseAdmin.auth.getSession()
+      } = await supabaseClient.auth.getSession()
 
       if (sessionError || !session) {
         throw new Error('You must be signed in')

@@ -36,16 +36,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  console.log("User: ", user)
+
   // 4) check admin rights with your admin key
   const { data: adminRow, error: adminError } = await supabaseAdmin
-    .from('admin')
+    .from('admins')
     .select('id')
     .eq('id', user.id)
     .single()
 
     console.log("Admin: ", adminRow, "Error:", adminError)
   if (adminError || !adminRow) {
-
+    console.error('Admin check failed:', adminError)
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
