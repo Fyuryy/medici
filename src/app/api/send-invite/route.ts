@@ -1,33 +1,48 @@
 // src/app/api/send-invite/route.ts
+import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { sendEmail } from '@/utils/email'
 import { sendSms } from '@/utils/sms'
-import { parse } from 'cookie'
 
 export async function POST(request: Request) {
-  // 0) Parse Supabase session token from cookies
-  const cookieHeader = request.headers.get('cookie') || ''
-  const parsed = parse(cookieHeader)
-  const accessToken = parsed['sb-access-token'] || parsed['supabase-access-token']
+  // 1. Build the client manually
+  const cookieStore = cookies()
+  const accessToken = (await cookieStore).get('sb-access-token')?.value || (await cookieStore).get('supabase-access-token')?.value
+
   if (!accessToken) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  // 1) Retrieve the user from the token
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      global: {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    }
+  )
+
   const {
     data: { user },
-    error: getUserError,
-  } = await supabaseAdmin.auth.getUser(accessToken)
-  if (getUserError || !user) {
+    error,
+  } = await supabase.auth.getUser()
+
+  if (error || !user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // 2) Verify user is in your `admin` table
+  // 2. Check admin table using supabaseAdmin
   const { data: adminRow, error: adminError } = await supabaseAdmin
     .from('admin')
     .select('user_id')
     .eq('user_id', user.id)
     .single()
+
   if (adminError || !adminRow) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
