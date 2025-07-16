@@ -3,17 +3,16 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { sendEmail } from '@/utils/email'
 import { sendSms } from '@/utils/sms'
-import cookie from 'cookie'
+import { parse } from 'cookie'
 
 export async function POST(request: Request) {
   // 0) Parse Supabase session token from cookies
   const cookieHeader = request.headers.get('cookie') || ''
-  const parsed = cookie.parse(cookieHeader)
+  const parsed = parse(cookieHeader)
   const accessToken = parsed['sb-access-token'] || parsed['supabase-access-token']
   if (!accessToken) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-
   // 1) Retrieve the user from the token
   const {
     data: { user },
