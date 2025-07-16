@@ -4,7 +4,7 @@ import { useState } from 'react'
 import QrScanner from '@/components/QrScanner'
 
 export default function ScanPage() {
-  const [message, setMessage] = useState('Point your camera at the QR')
+  const [message, setMessage] = useState('Point your camera at the QR code')
   const [scanned, setScanned] = useState(false)
 
   const handleScan = async (code: string) => {
