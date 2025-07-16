@@ -9,6 +9,7 @@ import { sendSms } from '@/utils/sms'
 export async function POST(request: Request) {
   // ───────────────────────────────────────────────────────────────────────────────
   // 1) grab the raw cookie header and parse it
+  console.log("cookie header:", request.headers.get("cookie"))
   const cookieHeader = request.headers.get('cookie') || ''
   const parsed = parse(cookieHeader)
   const accessToken =
