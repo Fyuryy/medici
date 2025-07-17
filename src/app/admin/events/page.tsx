@@ -2,7 +2,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { supabaseClient } from '@/lib/supabaseClient'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 interface Event {
   id: string
@@ -24,7 +24,7 @@ export default function AdminEventsPage() {
 
   const fetchEvents = async () => {
     setLoading(true)
-    const { data, error } = await supabaseClient
+    const { data, error } = await supabaseAdmin
       .from('events')
       .select('*')
       .order('date_time', { ascending: true })
@@ -48,7 +48,7 @@ export default function AdminEventsPage() {
       setError('All fields are required')
       return
     }
-    const { error } = await supabaseClient
+    const { error } = await supabaseAdmin
       .from('events')
       .insert([{ name, date_time, location }])
     if (error) {
