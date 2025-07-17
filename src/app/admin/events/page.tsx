@@ -13,7 +13,7 @@ export interface Event {
 export default async function AdminEventsPage() {
   // Fetch all events server-side with service-role key
   const { data: events, error } = await supabaseAdmin
-    .from<Event>('events')
+    .from('events')
     .select('id, name, date_time, location, created_at')
     .order('date_time', { ascending: true })
 
