@@ -1,7 +1,7 @@
 // src/components/InvitationForm.tsx
 'use client'
 
-import { useState, FormEvent, ChangeEvent } from 'react'
+import { useState, FormEvent, ChangeEvent, useEffect } from 'react'
 
 export interface FormState {
   name: string
@@ -14,11 +14,13 @@ export interface FormState {
 
 interface InvitationFormProps {
   initialValues?: Partial<FormState>
+  onChange?: (data: FormState) => void
   onSubmit: (data: FormState) => Promise<void>
 }
 
 export default function InvitationForm({
   initialValues = {},
+  onChange,
   onSubmit,
 }: InvitationFormProps) {
   const [form, setForm] = useState<FormState>({
@@ -35,6 +37,10 @@ export default function InvitationForm({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [serverError, setServerError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+
+  useEffect(() => {
+    onChange?.(form)
+  }, [form, onChange])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -87,11 +93,6 @@ export default function InvitationForm({
     // Phone (optional) validation
     if (form.phone && !/^[0-9]+$/.test(form.phone)) {
       newErrors.phone = 'Phone number must contain digits only'
-    }
-
-    // Consent
-    if (!form.consent) {
-      newErrors.consent = 'You must consent to photo use'
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -176,6 +177,7 @@ export default function InvitationForm({
 
       <div className="form-group">
         <label className="checkbox-label" htmlFor="consent">
+          <input type="hidden" name="consent" value="false" />
           <input
             id="consent"
             name="consent"

@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import QRCodeReact from 'react-qr-code' // for on-page QR
 import { notFound } from 'next/navigation'
 
+
 export default async function TicketPage({ params }) {
   const { ticket_code } = params
   // 1) Fetch with the service role key (ignores RLS)

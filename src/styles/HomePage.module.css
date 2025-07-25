@@ -1,0 +1,32 @@
+/* styles/components/HomePage.module.css */
+.container {
+  border: 1px solid #888;
+  position: relative;
+  display: flex;
+  flex-direction: column; /* stack children vertically */
+  justify-content: center; /* center vertically in viewport */
+  align-items: center; /* center horizontally */
+  min-height: 100vh; /* fill full viewport */
+  padding: 2rem;
+}
+
+.logo {
+  margin-bottom: 1rem;
+}
+
+.countdown {
+  position: relative;
+  z-index: 1;
+  font-size: 1.25rem;
+  color: white;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 3rem;
+  }
+  .countdown {
+    font-size: 1.875rem;
+  }
+}

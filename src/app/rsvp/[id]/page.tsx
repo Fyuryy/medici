@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import { loadStripe } from '@stripe/stripe-js'
 import InvitationForm, { FormState } from '@/components/InvitationForm'
 
 export default function RSVPPage() {
@@ -15,12 +16,19 @@ export default function RSVPPage() {
   } | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-
-  const [rsvpDone, setRsvpDone] = useState(false)
-  const [, setUserId] = useState<string | null>(null)
   const [rsvpError, setRsvpError] = useState('')
 
-  // 1) Fetch invitation
+  // our controlled form state
+  const [formState, setFormState] = useState<FormState>({
+    email: '',
+    phone: '',
+    consent: false,
+    name: '',
+    dob: '',
+    reminder: false,
+  })
+
+  // 1) Fetch invitation data
   useEffect(() => {
     if (!id) return
     ;(async () => {
@@ -35,6 +43,12 @@ export default function RSVPPage() {
           setError('This invitation has already been used.')
         } else {
           setInvitation(data)
+          // seed email/phone into formState
+          setFormState((fs) => ({
+            ...fs,
+            email: data.email,
+            phone: data.phone || '',
+          }))
         }
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Invalid invitation link.')
@@ -44,29 +58,43 @@ export default function RSVPPage() {
     })()
   }, [id])
 
-  // 2) Handle RSVP form submission
-  const handleRSVP = async (formData: FormState) => {
-    console.log('RSVP handler fired:', formData)
+  // 2) Rehydrate any saved form-data on mount
+  useEffect(() => {
+    if (!id) return
+    const saved = localStorage.getItem(`formData-${id}`)
+    if (saved) {
+      setFormState(JSON.parse(saved))
+    }
+  }, [id])
 
+  // 3) Handle RSVP -> save, then initiate Stripe Checkout
+  const handleRSVP = async (values: FormState) => {
     if (!invitation) return
     setRsvpError('')
+
+    // save for cancel+restore
+    localStorage.setItem(`formData-${id}`, JSON.stringify(values))
+
     try {
       const res = await fetch('/api/rsvp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           invitation_id: id,
-          consent: formData.consent,
-          name: formData.name,
-          birthdate: formData.dob,
-          phone: formData.phone,
-          email: formData.email,
+          consent: !!values.consent,
+          name: values.name,
+          birthdate: values.dob,
+          phone: values.phone,
+          email: values.email,
         }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error)
-      setUserId(json.user_id)
-      setRsvpDone(true)
+
+      const stripe = await loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
+      )
+      await stripe!.redirectToCheckout({ sessionId: json.sessionId })
     } catch (e) {
       setRsvpError(
         e instanceof Error ? e.message : 'An unexpected error occurred.'
@@ -79,23 +107,13 @@ export default function RSVPPage() {
 
   return (
     <div style={{ maxWidth: 400, margin: '2rem auto' }}>
-      {!rsvpDone ? (
-        <>
-          <h1>Please complete your RSVP</h1>
-          {rsvpError && <p style={{ color: 'red' }}>{rsvpError}</p>}
-          <InvitationForm
-            initialValues={{
-              phone: invitation!.phone || '',
-              email: invitation!.email,
-            }}
-            onSubmit={handleRSVP}
-          />
-        </>
-      ) : (
-        <>
-          <h2>All set! Check your email to get your ticket!</h2>
-        </>
-      )}
+      <h1>Please complete your RSVP &amp; payment</h1>
+      {rsvpError && <p style={{ color: 'red' }}>{rsvpError}</p>}
+      <InvitationForm
+        initialValues={formState}
+        onChange={setFormState}
+        onSubmit={handleRSVP}
+      />
     </div>
   )
 }

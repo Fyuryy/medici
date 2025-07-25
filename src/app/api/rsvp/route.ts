@@ -1,170 +1,133 @@
 // src/app/api/rsvp/route.ts
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
-import { EmailAttachment, sendEmail } from '@/utils/email'
-import {v4 as uuidv4} from 'uuid'
-import QRCode from 'qrcode'
 
+// Initialize Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-06-30.basil',
+})
 
-export async function POST(request: Request) {
-  try {
-    // 1) Parse & validate incoming JSON
-    const {
-      invitation_id,
-      consent,
-      name,
-      birthdate,
-      phone,
-      email: formEmail,
-    }: {
-      invitation_id?: string
-      consent?: boolean
-      name?: string
-      birthdate?: string
-      phone?: string
-      email?: string
-    } = await request.json()
+export async function POST(request: NextRequest) {
+  // 1) Parse and validate request body
+  const body = await request.json()
+  const invitationId = body.invitation_id as string | undefined
+  const consent = body.consent as boolean | undefined
+  const name = body.name as string | undefined
+  const birthdate = body.birthdate as string | undefined
+  const phone = body.phone as string | undefined
 
-    const missing: string[] = []
-    if (!invitation_id) missing.push('invitation_id')
-    if (consent === undefined) missing.push('consent')
-    if (!name) missing.push('name')
-    if (!birthdate) missing.push('birthdate')
-    if (missing.length) {
-      return NextResponse.json(
-        { error: `Missing required fields: ${missing.join(', ')}` },
-        { status: 400 }
-      )
-    }
+  const missingFields: string[] = []
+  if (!invitationId) missingFields.push('invitation_id')
+  if (!name)         missingFields.push('name')
+  if (!birthdate)    missingFields.push('birthdate')
+  if (missingFields.length) {
+    return NextResponse.json(
+      { error: `Missing required fields: ${missingFields.join(', ')}` },
+      { status: 400 }
+    )
+  }
 
-    // 2) Fetch the invitation (to verify and get the invitee’s email)
-    const { data: invite, error: inviteErr } = await supabaseAdmin
-      .from('invitations')
-      .select('id, email, phone, used')
-      .eq('id', invitation_id)
-      .single()
+  // 2) Verify invitation
+  const { data: invite, error: inviteErr } = await supabaseAdmin
+    .from('invitations')
+    .select('id, email, phone, used, event_id')
+    .eq('id', invitationId)
+    .single()
+  if (inviteErr || !invite) {
+    return NextResponse.json(
+      { error: 'Invalid invitation ID.' },
+      { status: 400 }
+    )
+  }
+  if (invite.used) {
+    return NextResponse.json(
+      { error: 'This invitation has already been used.' },
+      { status: 400 }
+    )
+  }
 
-    if (inviteErr || !invite) {
-      return NextResponse.json(
-        { error: 'Invalid invitation ID.' },
-        { status: 400 }
-      )
-    }
+  // 3) Upsert RSVP
+  const { data: rsvp, error: rsvpErr } = await supabaseAdmin
+    .from('rsvps')
+    .upsert(
+      { invitation_id: invitationId, consent: consent ?? false },
+      { onConflict: 'invitation_id' }
+    )
+    .select('id')
+    .single()
+  if (rsvpErr || !rsvp) {
+    console.error('RSVP error:', rsvpErr)
+    return NextResponse.json(
+      { error: 'Failed to record RSVP.' },
+      { status: 500 }
+    )
+  }
 
-    console.log("invitation_id:",invite.id, "Email:", invite.email, "Phone:", invite.phone, "Used:", invite.used)
-    if (invite.used) {
-      return NextResponse.json(
-        { error: 'This invitation has already been used.' },
-        { status: 400 }
-      )
-    }
-
-    // 3) Record the RSVP (only consent + invitation_id)
-    const { data: rsvp, error: rsvpErr } = await supabaseAdmin
-      .from('rsvps')
-      .upsert(
-        { invitation_id, consent },
-        { onConflict: 'invitation_id' }
-      ) 
-      .select('id')
-      .single()
-
-    if (rsvpErr || !rsvp) {
-      return NextResponse.json(
-        { error: 'Failed to record RSVP.' },
-        { status: 500 }
-      )
-    }
-
-
-
-
-
-
-    // 4) Determine which email to register
-    const emailToUse = formEmail?.trim() || invite.email
-    if (!emailToUse) {
-      return NextResponse.json(
-        { error: 'No email available for user.' },
-        { status: 400 }
-      )
-    }
-
-    // after upserting into "rsvps"
-const invitationId = invitation_id; // the UUID from invitations
-
+  // 4) Upsert user profile
   const { data: user, error: userErr } = await supabaseAdmin
     .from('users')
     .upsert(
       {
-        rsvp_id: invitationId, 
+        rsvp_id:        invitationId,
         name,
-        email: emailToUse,
-        phone: phone || invite.phone || null,
-        date_of_birth: birthdate,
+        email:          invite.email,
+        phone:          phone ?? invite.phone ?? null,
+        date_of_birth:  birthdate,
       },
       { onConflict: 'email' }
     )
     .select('id')
     .single()
-
-    
-    if (userErr || !user) {
-      console.error('Error creating user:', userErr)
-      return NextResponse.json(
-        { error: userErr?.message || 'Failed to create user.' },
-        { status: 500 }
-      )
-    }
-
-    const ticketCode = uuidv4()
-    await supabaseAdmin
-      .from('tickets')
-      .insert({
-        user_id:     user.id,
-        event_id:    process.env.NEXT_PUBLIC_EVENT_ID!,
-        ticket_code: ticketCode,
-        issued_at:   new Date().toISOString(),
-      })
-
-    // mark used…
-    await supabaseAdmin
-      .from('invitations')
-      .update({ used: true })
-      .eq('id', invitation_id)
-
-    // Build the ticket link
-    const baseUrl    = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-    const ticketLink = `${baseUrl}/tickets/${ticketCode}`
-
-    // 1) Generate a PNG buffer of the QR  
-    const qrBuffer = await QRCode.toBuffer(ticketCode, { type: 'png', width: 256 })
-
-    // 2) Prepare the attachment  
-    const attachment: EmailAttachment = {
-      content: qrBuffer.toString('base64'),
-      filename: 'ticket.png',
-      type: 'image/png',
-      disposition: 'attachment',
-    }
-
-    // 3) Send the email with the QR as attachment
-    await sendEmail(
-      emailToUse,
-      'Your MEDICI Event Ticket 🎫',
-      `Thank you for RSVPing! Your ticket is attached as “ticket.png”.`,
-      `<p>Thanks for RSVPing, ${name}!</p>
-       <p>Please find your ticket attached to this email.</p>
-       <p>If you prefer to scan a QR on screen, visit: <a href="${ticketLink}">${ticketLink}</a></p>`,
-      [attachment]  // Attach the QR code image         
+  if (userErr || !user) {
+    console.error('User upsert error:', userErr)
+    return NextResponse.json(
+      { error: 'Failed to create or update user.' },
+      { status: 500 }
     )
-
-    return NextResponse.json({ success: true, ticketCode })
-  } catch (err) {
-    console.error(err)
-    const msg = err instanceof Error ? err.message : 'Unexpected server error.'
-    return NextResponse.json({ error: msg }, { status: 500 })
   }
+
+  // 5) Determine priceId
+  const priceId = process.env.STRIPE_PRICE_ID
+  if (!priceId) {
+    console.error('Missing STRIPE_PRICE_ID in environment')
+    return NextResponse.json(
+      { error: 'Ticket price not configured.' },
+      { status: 500 }
+    )
+  }
+
+  // 6) Build origin and session params
+  const originHeader = request.headers.get('origin')
+  const origin = originHeader ?? process.env.NEXT_PUBLIC_APP_URL!
+
+  const sessionParams: Stripe.Checkout.SessionCreateParams = {
+    payment_method_types: ['card'],
+    line_items:          [{ price: priceId, quantity: 1 }],
+    mode:                'payment',
+    success_url:         `${origin}/stripe/success?id=${invitationId}`,
+    cancel_url:          `${origin}/stripe/cancel?id=${invitationId}`,
+    metadata: {
+      product_type: 'ticket',
+      invitation_id: invitationId as string,
+      rsvp_id:       rsvp.id.toString(),
+      user_id:       user.id.toString(),
+      email:         invite.email,
+    },
+  }
+
+  // 7) Create Stripe Checkout Session
+  let session: Stripe.Checkout.Session
+  try {
+    session = await stripe.checkout.sessions.create(sessionParams)
+  } catch (err) {
+    console.error('Stripe Checkout creation failed', err)
+    return NextResponse.json(
+      { error: 'Unable to initiate payment.' },
+      { status: 500 }
+    )
+  }
+
+  // 8) Return session ID
+  return NextResponse.json({ sessionId: session.id })
 }
-
-

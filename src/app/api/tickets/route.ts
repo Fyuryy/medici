@@ -4,19 +4,21 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { v4 as uuidv4 } from 'uuid'
 
 export async function POST(request: Request) {
-  try {
-    // now include invitation_id
+   try {
+    // Expect the Stripe Checkout session ID in the body as well
     const {
       user_id,
       event_id,
-      invitation_id,    // ← add this
-    }: {
+      invitation_id,
+      session_id,       // ← new
+    }:{
       user_id?: string
       event_id?: string
       invitation_id?: string
+      session_id?: string
     } = await request.json()
 
-    if (!user_id || !event_id || !invitation_id) {
+    if (!user_id || !event_id || !invitation_id || !session_id) {
       return NextResponse.json(
         { error: 'Missing user_id, event_id, or invitation_id' },
         { status: 400 }
@@ -32,6 +34,8 @@ export async function POST(request: Request) {
       .insert({
         user_id,
         event_id,
+        invitation_id,
+        session_id,            // ← store the Stripe session here
         ticket_code,
         issued_at: new Date().toISOString(),
       })
@@ -53,7 +57,10 @@ export async function POST(request: Request) {
       .eq('id', invitation_id)
 
     // 4) Return the generated ticket code
-    return NextResponse.json({ ticket_code: data.ticket_code })
+    return NextResponse.json({
+      ticket_code: data.ticket_code,
+      session_id,   // echo it back so your front-end can correlate if needed
+    })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'An unexpected error occurred.'
     console.error('Error in POST /api/tickets:', err)
