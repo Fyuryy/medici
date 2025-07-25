@@ -87,6 +87,8 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  console.log("Added user: ", name, " with ID: ", user.id)
+
   // 5) Determine priceId
   const priceId = process.env.STRIPE_PRICE_ID
   if (!priceId) {
@@ -108,11 +110,11 @@ export async function POST(request: NextRequest) {
     success_url:         `${origin}/stripe/success?id=${invitationId}`,
     cancel_url:          `${origin}/stripe/cancel?id=${invitationId}`,
     metadata: {
-      product_type: 'ticket',
       invitation_id: invitationId as string,
       rsvp_id:       rsvp.id.toString(),
       user_id:       user.id.toString(),
       email:         invite.email,
+      event_id:      invite.event_id,
     },
   }
 
@@ -120,6 +122,7 @@ export async function POST(request: NextRequest) {
   let session: Stripe.Checkout.Session
   try {
     session = await stripe.checkout.sessions.create(sessionParams)
+    console.log('CREATED SESSION METADATA:', session.metadata)
   } catch (err) {
     console.error('Stripe Checkout creation failed', err)
     return NextResponse.json(

@@ -1,7 +1,7 @@
 // src/app/api/webhooks/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import { buffer } from 'micro'
+
 import QRCode from 'qrcode'
 import { sendEmail, EmailAttachment } from '@/utils/email'
 
@@ -13,13 +13,25 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 })
 
 export async function POST(req: NextRequest) {
+   console.log('🔥 Received raw webhook call');
+
   // 1) Verify webhook
   const sig = req.headers.get('stripe-signature')!
-  const buf = await buffer(req)
+  
+
+  let buffer: Buffer
+  try{
+      const raw = await req.arrayBuffer()
+      buffer = Buffer.from(raw)
+  }catch (err) {
+    console.error('Failed to read request body', err)
+    return NextResponse.json({ message: 'Invalid request' }, { status: 400 })
+  }
+
   let event: Stripe.Event
   try {
     event = stripe.webhooks.constructEvent(
-      buf,
+      buffer,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     )
@@ -31,15 +43,21 @@ export async function POST(req: NextRequest) {
   // 2) Only handle completed checkouts
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
+
     const meta    = session.metadata as Record<string, string>
+    console.log('SESSION METADATA:', meta)
+
+    
 
     // pull out what your tickets route needs
     const payload = {
-      user_id:       meta.user_id!,
-      event_id:      meta.event_id!,       // make sure you set this in metadata
-      invitation_id: meta.invitation_id!,
+      user_id:       meta.user_id,
+      event_id:      meta.event_id,       // make sure you set this in metadata
+      invitation_id: meta.invitation_id,
       session_id:    session.id,
     }
+
+    console.log('Processing completed checkout:', payload)
 
     // 3) Call your `/api/tickets` endpoint
     const base = process.env.NEXT_PUBLIC_BASE_URL!

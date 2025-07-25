@@ -157,9 +157,7 @@ export default function InvitationForm({
           value={form.email}
           onChange={handleChange}
         />
-        <p className="hint">
-          If left blank, we will use your invitation email.
-        </p>
+
         {errors.email && <p className="error">{errors.email}</p>}
       </div>
 

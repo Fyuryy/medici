@@ -50,6 +50,9 @@ export async function POST(request: Request) {
       )
     }
 
+
+    console.log('Ticket created:', data, "with id: ", data.ticket_code)
+
     // 3) **Mark the invitation as used**
     await supabaseAdmin
       .from('invitations')
