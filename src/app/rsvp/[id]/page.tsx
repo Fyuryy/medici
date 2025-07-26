@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { loadStripe } from '@stripe/stripe-js'
 import InvitationForm, { FormState } from '@/components/InvitationForm'
+import styles from '@/styles/RsvpPage.module.css'
 
 export default function RSVPPage() {
   const { id } = useParams() as { id: string }
@@ -107,7 +108,9 @@ export default function RSVPPage() {
 
   return (
     <div style={{ maxWidth: 400, margin: '2rem auto' }}>
-      <h1>Please complete your RSVP &amp; payment</h1>
+      <h1 className={styles.heading}>
+        Insérez vos données personnelles et proccèdez au payement
+      </h1>
       {rsvpError && <p style={{ color: 'red' }}>{rsvpError}</p>}
       <InvitationForm
         initialValues={formState}

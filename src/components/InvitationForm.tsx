@@ -2,6 +2,7 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent, useEffect } from 'react'
+import styles from '@/styles/components/InvitationForm.module.css'
 
 export interface FormState {
   name: string
@@ -71,31 +72,20 @@ export default function InvitationForm({
 
     const newErrors: typeof errors = {}
 
-    // Name
-    if (!form.name.trim()) {
-      newErrors.name = 'Name is required'
-    } else if (!/^[A-Za-z\s]+$/.test(form.name)) {
-      newErrors.name = 'Name can only contain letters and spaces'
-    }
+    if (!form.name.trim()) newErrors.name = 'Le nom est requis'
+    else if (!/^[A-Za-z\s]+$/.test(form.name))
+      newErrors.name = 'Le nom ne doit contenir que des lettres'
 
-    // Birthdate & age ≥ 18
-    if (!form.dob) {
-      newErrors.dob = 'Birthdate is required'
-    } else if (calculateAge(form.dob) < 18) {
-      newErrors.dob = 'You must be at least 18 years old'
-    }
+    if (!form.dob) newErrors.dob = 'La date de naissance est requise'
+    else if (calculateAge(form.dob) < 18)
+      newErrors.dob = 'Vous devez avoir au moins 18 ans'
 
-    // Email (optional) validation
-    if (form.email && !isValidEmail(form.email)) {
-      newErrors.email = 'Please enter a valid email address'
-    }
+    if (form.email && !isValidEmail(form.email))
+      newErrors.email = 'Entrez un email valide'
+    if (form.phone && !/^[0-9]+$/.test(form.phone))
+      newErrors.phone = 'Le téléphone doit contenir uniquement des chiffres'
 
-    // Phone (optional) validation
-    if (form.phone && !/^[0-9]+$/.test(form.phone)) {
-      newErrors.phone = 'Phone number must contain digits only'
-    }
-
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors).length) {
       setErrors(newErrors)
       return
     }
@@ -103,26 +93,22 @@ export default function InvitationForm({
     setIsSubmitting(true)
     try {
       await onSubmit(form)
-      setSuccessMessage('Thank you! Your RSVP has been submitted.')
+      setSuccessMessage('')
     } catch (err) {
-      if (err instanceof Error) {
-        setServerError(err.message)
-      } else {
-        setServerError('An unexpected error occurred.')
-      }
+      setServerError(err instanceof Error ? err.message : 'Unexpected error')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
-      {serverError && <p className="error">{serverError}</p>}
-      {successMessage && <p className="success">{successMessage}</p>}
+    <form onSubmit={handleSubmit} className={styles.formContainer}>
+      {serverError && <p className={styles.error}>{serverError}</p>}
+      {successMessage && <p className={styles.success}>{successMessage}</p>}
 
-      <div className="form-group">
-        <label htmlFor="name">
-          Name <span className="required">*</span>
+      <div className={styles.formGroup}>
+        <label htmlFor="name" className={styles.label}>
+          Nom et Prénom <span className={styles.required}>*</span>
         </label>
         <input
           id="name"
@@ -130,13 +116,14 @@ export default function InvitationForm({
           type="text"
           value={form.name}
           onChange={handleChange}
+          className={styles.input}
         />
-        {errors.name && <p className="error">{errors.name}</p>}
+        {errors.name && <p className={styles.error}>{errors.name}</p>}
       </div>
 
-      <div className="form-group">
-        <label htmlFor="dob">
-          Birthdate <span className="required">*</span>
+      <div className={styles.formGroup}>
+        <label htmlFor="dob" className={styles.label}>
+          Date de naissance <span className={styles.required}>*</span>
         </label>
         <input
           id="dob"
@@ -144,136 +131,76 @@ export default function InvitationForm({
           type="date"
           value={form.dob}
           onChange={handleChange}
+          className={styles.input}
         />
-        {errors.dob && <p className="error">{errors.dob}</p>}
+        {errors.dob && <p className={styles.error}>{errors.dob}</p>}
       </div>
 
-      <div className="form-group">
-        <label htmlFor="email">Email (optional)</label>
+      <div className={styles.formGroup}>
+        <label htmlFor="email" className={styles.label}>
+          Email (optional)
+        </label>
         <input
           id="email"
           name="email"
           type="email"
           value={form.email}
           onChange={handleChange}
+          className={styles.input}
         />
-
-        {errors.email && <p className="error">{errors.email}</p>}
+        {errors.email && <p className={styles.error}>{errors.email}</p>}
       </div>
 
-      <div className="form-group">
-        <label htmlFor="phone">Phone (optional)</label>
+      <div className={styles.formGroup}>
+        <label htmlFor="phone" className={styles.label}>
+          Phone (optional)
+        </label>
         <input
           id="phone"
           name="phone"
           type="tel"
           value={form.phone}
           onChange={handleChange}
+          className={styles.input}
         />
-        {errors.phone && <p className="error">{errors.phone}</p>}
+        {errors.phone && <p className={styles.error}>{errors.phone}</p>}
       </div>
 
-      <div className="form-group">
-        <label className="checkbox-label" htmlFor="consent">
-          <input type="hidden" name="consent" value="false" />
+      <div className={styles.formGroup}>
+        <label className={styles.checkboxLabel} htmlFor="consent">
           <input
             id="consent"
             name="consent"
             type="checkbox"
             checked={form.consent}
             onChange={handleChange}
+            className={styles.checkbox}
           />
-          I consent to photos being used for marketing purposes{' '}
+          I consent to photos being used for marketing purposes
         </label>
       </div>
 
-      <div className="form-group">
-        <label className="checkbox-label" htmlFor="reminder">
+      <div className={styles.formGroup}>
+        <label className={styles.checkboxLabel} htmlFor="reminder">
           <input
             id="reminder"
             name="reminder"
             type="checkbox"
             checked={form.reminder}
             onChange={handleChange}
+            className={styles.checkbox}
           />
           I want to receive reminders by email or phone message
         </label>
       </div>
 
-      <button type="submit" disabled={isSubmitting} className="submit-button">
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className={styles.submitButton}
+      >
         {isSubmitting ? 'Submitting…' : 'Submit'}
       </button>
-
-      <style jsx>{`
-        .form-container {
-          max-width: 500px;
-          margin: 2rem auto;
-          padding: 1rem;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          display: flex;
-          flex-direction: column;
-        }
-        .form-group {
-          margin-bottom: 1rem;
-          width: 90%;
-        }
-        label {
-          font-weight: bold;
-          margin-bottom: 0.25rem;
-          display: block;
-        }
-        .hint {
-          font-size: 0.875rem;
-          color: #555;
-          margin: 0.25rem 0;
-        }
-        input[type='text'],
-        input[type='date'],
-        input[type='email'],
-        input[type='tel'] {
-          width: 100%;
-          padding: 0.5rem;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
-        .checkbox-label {
-          display: flex;
-          align-items: center;
-        }
-        .checkbox-label input {
-          margin-right: 0.5rem;
-        }
-        .error {
-          color: #c00;
-          font-size: 0.875rem;
-          margin-top: 0.25rem;
-        }
-        .success {
-          color: #060;
-          font-size: 0.875rem;
-          margin-bottom: 1rem;
-        }
-        .required {
-          color: #c00;
-        }
-        .submit-button {
-          width: 100%;
-          padding: 0.75rem;
-          background: #1f2937;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        .submit-button:disabled {
-          opacity: 0.6;
-          cursor: default;
-        }
-        .submit-button:hover:not(:disabled) {
-          background: #374151;
-        }
-      `}</style>
     </form>
   )
 }

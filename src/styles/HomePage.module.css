@@ -14,14 +14,6 @@
   margin-bottom: 1rem;
 }
 
-.countdown {
-  position: relative;
-  z-index: 1;
-  font-size: 1.25rem;
-  color: white;
-  text-align: center;
-}
-
 @media (min-width: 768px) {
   .title {
     font-size: 3rem;

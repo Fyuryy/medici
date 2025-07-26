@@ -1,0 +1,82 @@
+/* src/styles/components/InvitationForm.module.css */
+.formContainer {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.input {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.input:focus {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-weight: 500;
+}
+
+.checkbox {
+  margin-right: 0.75rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+.submitButton {
+  padding: 0.75rem;
+  background: hwb(18 13% 38%);
+  color: whitesmoke;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #374151;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #f87171;
+  font-size: 0.875rem;
+}
+
+.success {
+  color: #34d399;
+  font-size: 0.875rem;
+}
+
+.required {
+  color: #f87171;
+}
