@@ -22,7 +22,7 @@ interface InvitationFormProps {
 
 export default function InvitationForm({
   initialValues = {},
-  expectedEmail
+  expectedEmail,
   onChange,
   onSubmit,
 }: InvitationFormProps) {
@@ -75,7 +75,7 @@ export default function InvitationForm({
     const newErrors: typeof errors = {}
     // 1) Email must exactly match the invitation email
     if (form.email.trim() !== expectedEmail.trim()) {
-      newErrors.email = 'L\'email doit correspondre à l\'invitation'
+      newErrors.email = "L'email doit correspondre à l'invitation"
     }
 
     if (!form.name.trim()) newErrors.name = 'Le nom est requis'
@@ -182,8 +182,8 @@ export default function InvitationForm({
             onChange={handleChange}
             className={styles.checkbox}
           />
-          J'accepte etre pris en photo au cours de l'évènement et que ces images
-          soient utilisées à des fins de communication
+          J&apos;accepte etre pris en photo au cours de l&apos;évènement et que
+          ces images soient utilisées à des fins de communication
         </label>
       </div>
 
@@ -197,7 +197,7 @@ export default function InvitationForm({
             onChange={handleChange}
             className={styles.checkbox}
           />
-          Envoyez-moi un rappel par e-mail avant l'événement
+          Envoyez-moi un rappel par e-mail avant l&apos;événement
         </label>
       </div>
 

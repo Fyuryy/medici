@@ -12,7 +12,9 @@ export default function CancelPage() {
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Payement annulé</h1>
-      <p className={styles.message}>Votre payement n'a pas été effectué.</p>
+      <p className={styles.message}>
+        Votre payement nn&apos;aa pas été effectué.
+      </p>
       {id ? (
         <Link href={`/rsvp/${id}`} className={styles.link}>
           Retour au formulaire
