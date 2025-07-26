@@ -194,7 +194,7 @@ const htmlBody = `
    await Promise.all([
   sendEmail(
     email,
-    "You're invited to MEDICI 🎉",
+    "Invitation Medici",
     textBody,
     // 2) Full HTML body
     htmlBody,

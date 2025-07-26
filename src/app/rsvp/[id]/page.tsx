@@ -114,6 +114,7 @@ export default function RSVPPage() {
       {rsvpError && <p style={{ color: 'red' }}>{rsvpError}</p>}
       <InvitationForm
         initialValues={formState}
+        expectedEmail={invitation?.email as string}
         onChange={setFormState}
         onSubmit={handleRSVP}
       />

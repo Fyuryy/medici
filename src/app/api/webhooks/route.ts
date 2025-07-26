@@ -91,9 +91,9 @@ export async function POST(req: NextRequest) {
 
     await sendEmail(
       emailTo,
-      'Your MEDICI Ticket',
-      'Thanks for your purchase—here is your ticket!',
-      `<p>Your code is <strong>${ticket_code}</strong>.</p>`,
+      'Votre ticket Medici',
+      'On vous retrouve le 22.08 à Lausanne!',
+      '<p>On vous retrouve le 22.08 à Lausanne!</p>',
       [attachment],
     )
   }
