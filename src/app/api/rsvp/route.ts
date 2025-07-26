@@ -107,8 +107,8 @@ export async function POST(request: NextRequest) {
     payment_method_types: ['card'],
     line_items:          [{ price: priceId, quantity: 1 }],
     mode:                'payment',
-    success_url:         `${origin}/stripe/success?id=${invitationId}`,
-    cancel_url:          `${origin}/stripe/cancel?id=${invitationId}`,
+     success_url:         `${origin}/stripe/success/${invitationId}?session_id={CHECKOUT_SESSION_ID}`,
+     cancel_url:          `${origin}/stripe/cancel/${invitationId}`,
     metadata: {
       invitation_id: invitationId as string,
       rsvp_id:       rsvp.id.toString(),
