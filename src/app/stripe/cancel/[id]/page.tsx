@@ -1,6 +1,7 @@
-// src/app/stripe/cancel/page.tsx
 'use client'
+// src/app/stripe/cancel/page.tsx
 
+'use client'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 

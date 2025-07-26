@@ -1,4 +1,5 @@
 // src/app/stripe/success/page.tsx
+
 'use client'
 
 import { useEffect } from 'react'
