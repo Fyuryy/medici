@@ -1,28 +1,33 @@
 // src/app/stripe/success/page.tsx
-
 'use client'
 
 import { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import styles from '@/styles/SuccessPage.module.css'
 
 export default function SuccessPage() {
   const params = useSearchParams()
-  const invitationId = params.get('id')
+  const id = params.get('id')
 
   // clear saved form data on success
   useEffect(() => {
-    if (invitationId) {
-      localStorage.removeItem(`formData-${invitationId}`)
+    if (id) {
+      localStorage.removeItem(`formData-${id}`)
     }
-  }, [invitationId])
+  }, [id])
 
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto', textAlign: 'center' }}>
-      <h1>Thank you!</h1>
-      <p>Your payment was successful and your RSVP is confirmed.</p>
-      <p>We’ll send you an email with your ticket shortly.</p>
-      <Link href="/">← Back to home</Link>
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Merci!</h1>
+      <p className={styles.message}>Votre payement a été accepté.</p>
+      <p className={styles.message}>
+        Nous vous enverrons bientôt le ticket par e-mail. Hâte de vous retrouver
+        pour une soirée inoubliable!
+      </p>
+      <Link href="/" className={styles.link}>
+        Retour
+      </Link>
     </div>
   )
 }

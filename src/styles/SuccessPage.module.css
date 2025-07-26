@@ -1,0 +1,35 @@
+/* src/styles/stripe/SuccessPage.module.css */
+.container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  text-align: center;
+
+  border-radius: 8px;
+  color: #fff;
+}
+
+.heading {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.message {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #1f2937;
+  background: #a77451;
+  padding: 0.5rem 1rem;
+
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.link:hover {
+  background: #e5e7eb;
+}

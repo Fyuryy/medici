@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
       content:    qrBuffer.toString('base64'),
       filename:   'ticket.png',
       type:       'image/png',
-      disposition:'attachment',
+      disposition: 'inline',
     }
 
     // fetch invitee email or include it in your tickets API response

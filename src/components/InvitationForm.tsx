@@ -95,7 +95,7 @@ export default function InvitationForm({
       await onSubmit(form)
       setSuccessMessage('')
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Unexpected error')
+      setServerError(err instanceof Error ? err.message : 'Erreur inconnue')
     } finally {
       setIsSubmitting(false)
     }
@@ -138,7 +138,7 @@ export default function InvitationForm({
 
       <div className={styles.formGroup}>
         <label htmlFor="email" className={styles.label}>
-          Email (optional)
+          E-mail
         </label>
         <input
           id="email"
@@ -153,7 +153,7 @@ export default function InvitationForm({
 
       <div className={styles.formGroup}>
         <label htmlFor="phone" className={styles.label}>
-          Phone (optional)
+          Téléphone (optionnel)
         </label>
         <input
           id="phone"
@@ -176,7 +176,8 @@ export default function InvitationForm({
             onChange={handleChange}
             className={styles.checkbox}
           />
-          I consent to photos being used for marketing purposes
+          J'accepte etre pris en photo au cours de l'évènement et que ces images
+          soient utilisées à des fins de communication
         </label>
       </div>
 
@@ -190,7 +191,7 @@ export default function InvitationForm({
             onChange={handleChange}
             className={styles.checkbox}
           />
-          I want to receive reminders by email or phone message
+          Envoyez-moi un rappel par e-mail avant l'événement
         </label>
       </div>
 
@@ -199,7 +200,7 @@ export default function InvitationForm({
         disabled={isSubmitting}
         className={styles.submitButton}
       >
-        {isSubmitting ? 'Submitting…' : 'Submit'}
+        {isSubmitting ? 'En cours...' : 'Envoyer'}
       </button>
     </form>
   )
