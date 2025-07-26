@@ -3,21 +3,42 @@
   border: 1px solid #888;
   position: relative;
   display: flex;
-  flex-direction: column; /* stack children vertically */
-  justify-content: center; /* center vertically in viewport */
-  align-items: center; /* center horizontally */
-  min-height: 100vh; /* fill full viewport */
-  padding: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem; /* Reduced padding for smaller screens */
+  box-sizing: border-box; /* Ensures padding doesn't cause overflow */
 }
 
 .logo {
   margin-bottom: 1rem;
+  width: 100%; /* Ensures logo container takes full width */
+  max-width: 500px; /* Limits logo size on larger screens */
 }
 
-@media (min-width: 768px) {
-  .title {
-    font-size: 3rem;
+.countdown {
+  font-size: 1.5rem; /* Default for mobile */
+  text-align: center; /* Ensures text is centered on all devices */
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem; /* Less padding on mobile */
   }
+
+  .logo {
+    max-width: 80vw; /* Scales logo to fit smaller screens */
+  }
+
+  .countdown {
+    font-size: 1.25rem; /* Smaller font for mobile */
+  }
+}
+
+/* Larger screens */
+@media (min-width: 768px) {
   .countdown {
     font-size: 1.875rem;
   }

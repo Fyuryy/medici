@@ -16,6 +16,8 @@ export default function HomePage() {
           width={722}
           height={153}
           priority
+          sizes="(max-width: 768px) 80vw, 50vw" // Adjusts image size based on viewport
+          style={{ width: '100%', height: 'auto' }} // Ensures responsive scaling
         />
       </div>
 
