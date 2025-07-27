@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
 
   // 6) Build origin and session params
   const originHeader = request.headers.get('origin')
-  const origin = originHeader ?? process.env.NEXT_PUBLIC_APP_URL!
+  const origin = originHeader ?? process.env.NEXT_PUBLIC_BASE_URL!
 
   const sessionParams: Stripe.Checkout.SessionCreateParams = {
     payment_method_types: ['card'],
