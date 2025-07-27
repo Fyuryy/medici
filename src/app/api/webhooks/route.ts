@@ -83,19 +83,29 @@ export async function POST(req: NextRequest) {
       content:    qrBuffer.toString('base64'),
       filename:   'ticket.png',
       type:       'image/png',
-      disposition: 'inline',
+      disposition: 'attachment',
     }
 
     // fetch invitee email or include it in your tickets API response
     const emailTo = meta.email!  
 
-    await sendEmail(
-      emailTo,
-      'Votre ticket Medici',
-      'On vous retrouve le 22.08 à Lausanne!',
-      '<p>On vous retrouve le 22.08 à Lausanne!</p>',
-      [attachment],
-    )
+
+     try {
+      await sendEmail(
+        emailTo,
+        'Votre ticket Medici',
+        'On vous retrouve le 22.08 à Lausanne!',
+        '<p>On vous retrouve le 22.08 à Lausanne!</p>',
+        [attachment],
+      );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.error('SendGrid error details:', err);
+      return NextResponse.json(
+        { message: 'Email send error', details: err.response?.body },
+        { status: 500 }
+      );
+    }
   }
 
   return NextResponse.json({ received: true })
