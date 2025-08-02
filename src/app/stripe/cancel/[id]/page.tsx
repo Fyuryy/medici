@@ -13,7 +13,7 @@ export default function CancelPage() {
     <div className={styles.container}>
       <h1 className={styles.heading}>Payement annulé</h1>
       <p className={styles.message}>
-        Votre payement nn&apos;aa pas été effectué.
+        Votre payement n&apos;a pas été effectué.
       </p>
       {id ? (
         <Link href={`/rsvp/${id}`} className={styles.link}>

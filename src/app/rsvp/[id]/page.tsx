@@ -74,7 +74,7 @@ export default function RSVPPage() {
 
   // Trigger fade after 5s
   useEffect(() => {
-    const timer = setTimeout(() => setFadeSplash(true), 3000)
+    const timer = setTimeout(() => setFadeSplash(true), 4500)
     return () => clearTimeout(timer)
   }, [])
 
