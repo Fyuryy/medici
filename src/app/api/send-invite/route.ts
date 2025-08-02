@@ -107,71 +107,76 @@ export async function POST(request: Request) {
     const textBody = `
   Chères amies, chers amis,
 
-  Le soleil se couche lentement sur le Léman, et à cette heure suspendue, nous vous convions à un moment rare, au sommet de la Tour Bel-Air.
+  Le soleil se couche lentement sur le Léman, et à cette heure suspendue, nous vous convions à un moment rare, au sommet de la Tour Bel-Air le 22 août prochain.
   Un instant pensé comme une respiration : une parenthèse d’art, de musique et de partage, entre ciel et ville.
 
   Au programme :
-  • Une heure de jazz, porté par des musiciens aux doigts d’or.  
-  • Une œuvre qui prendra vie sous vos yeux au fil d’une peinture en direct.  
-  • Deux heures d’un DJ set pensé pour célébrer la lumière qui s’éteint, jusqu’aux premières lueurs de la nuit.
+  •⁠  ⁠Une heure de jazz, porté par des musiciens aux doigts d’or,
+  •⁠  ⁠Une œuvre qui prendra vie sous vos yeux au fil d’une peinture en direct,
+  •⁠  ⁠Et enfin, deux heures d’un DJ set pensé pour célébrer la lumière qui s’éteint, jusqu’aux premières lueurs de la nuit.
 
   Horaires :
-  Début à 17h30  
-  Clôture entre 21h30 et 22h
-
-  Participation :
-  20 CHF (une contribution plus généreuse est la bienvenue, l’alcool est inclus)
+  Début à 17h00
+  Clôture : quand le soleil est couché.
+  Les lieux devront être définitivement libérés à 21:00.
 
   Tenue :
   Belle et élégante, à l’image du lieu et de l’instant.
 
+  Participation :
+  25.- (tout participation plus élevé est la bienvenue afin de soutenir Medici)
+
   Important :
-  Cet événement est strictement confidentiel. Merci de ne pas en parler autour de vous.  
-  Pour des raisons évidentes de discrétion et afin d’éviter toute difficulté, votre présence et celle des autres invités doivent rester privées.
+  Cet événement est strictement confidentiel. Merci de ne pas en parler autour de vous. Pour des raisons évidentes de discrétion et afin d’éviter toute difficulté avec les autorités, votre présence et celle des autres invités doivent rester privées.
+  Cet événement peut avoir lieu car le locataire des lieux (qui sera présent) met exceptionnellement et gracieusement l’espace à disposition.
+
+  Complément
+  Suite à votre confirmation, vous serez recontacté·e une semaine avant l’événement afin d’obtenir des informations pratiques concernant l’accès au rooftop ainsi qu’aux mesures de sécurité mises en place sur la Tour.
+  En cas de mauvaises conditions météorologiques, l’événement sera reporté au 3 septembre.
 
   Le nombre de places est limité.
 
-  Avec gratitude,  
+  Avec gratitude,
   MEDICI
 
-  RSVP ici : ${inviteLink}
+  Invitation: ${inviteLink}
   `.trim();
 
-// 2) HTML version
+// after your textBody definition…
 const htmlBody = `
   <p>Chères amies, chers amis,</p>
 
-  <p>
-    Le soleil se couche lentement sur le Léman, et à cette heure suspendue, nous vous convions à un moment rare,
-    au sommet de la <strong>Tour Bel-Air</strong>.<br>
-    Un instant pensé comme une respiration : une parenthèse d’art, de musique et de partage, entre ciel et ville.
-  </p>
+  <p>Le soleil se couche lentement sur le Léman, et à cette heure suspendue, nous vous convions à un moment rare, au sommet de la Tour Bel-Air le 22 août prochain.<br>
+  Un instant pensé comme une respiration : une parenthèse d’art, de musique et de partage, entre ciel et ville.</p>
 
   <p><strong>Au programme :</strong></p>
   <ul>
-    <li>Une heure de jazz, porté par des musiciens aux doigts d’or.</li>
-    <li>Une œuvre qui prendra vie sous vos yeux au fil d’une peinture en direct.</li>
-    <li>Deux heures d’un DJ set pensé pour célébrer la lumière qui s’éteint, jusqu’aux premières lueurs de la nuit.</li>
+    <li>Une heure de jazz, porté par des musiciens aux doigts d’or,</li>
+    <li>Une œuvre qui prendra vie sous vos yeux au fil d’une peinture en direct,</li>
+    <li>Et enfin, deux heures d’un DJ set pensé pour célébrer la lumière qui s’éteint, jusqu’aux premières lueurs de la nuit.</li>
   </ul>
 
   <p><strong>Horaires :</strong><br>
-     Début à 17h30<br>
-     Clôture entre 21h30 et 22h
-  </p>
-
-  <p><strong>Participation :</strong><br>
-     20 CHF (une contribution plus généreuse est la bienvenue, l’alcool est inclus)
-  </p>
+     Début à 17h00<br>
+     Clôture : quand le soleil est couché.<br>
+     Les lieux devront être définitivement libérés à 21:00.</p>
 
   <p><strong>Tenue :</strong><br>
-     Belle et élégante, à l’image du lieu et de l’instant.
-  </p>
+     Belle et élégante, à l’image du lieu et de l’instant.</p>
+
+  <p><strong>Participation :</strong><br>
+     25 CHF (toute contribution plus élevée est la bienvenue afin de soutenir Medici)</p>
 
   <p><strong>Important :</strong><br>
      Cet événement est strictement confidentiel. Merci de ne pas en parler autour de vous.<br>
-     Pour des raisons évidentes de discrétion et afin d’éviter toute difficulté, votre présence
-     et celle des autres invités doivent rester privées.
-  </p>
+     Pour des raisons évidentes de discrétion et afin d’éviter toute difficulté avec les autorités,<br>
+     votre présence et celle des autres invités doivent rester privées.<br>
+     Cet événement peut avoir lieu car le locataire des lieux (qui sera présent) met exceptionnellement et gracieusement l’espace à disposition.</p>
+
+  <p><strong>Complément :</strong><br>
+  Suite à votre confirmation, vous serez recontacté·e une semaine avant l’événement afin d’obtenir<br>
+  des informations pratiques concernant l’accès au rooftop ainsi qu’aux mesures de sécurité mises en place sur la Tour.<br>
+  En cas de mauvaises conditions météorologiques, l’événement sera reporté au 3 septembre.</p>
 
   <p>Le nombre de places est limité.</p>
 
@@ -185,10 +190,7 @@ const htmlBody = `
       Cliquez ici pour confirmer votre présence
     </a>
   </p>
-`.trim();
-
-
-
+`.trim()
 
 
    await Promise.all([
