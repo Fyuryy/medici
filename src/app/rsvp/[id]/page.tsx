@@ -109,7 +109,7 @@ export default function RSVPPage() {
   return (
     <div style={{ maxWidth: 400, margin: '2rem auto' }}>
       <h1 className={styles.heading}>
-        Insérez vos données personnelles et proccèdez au payement
+        Insérez vos données personnelles et procédez au payement
       </h1>
       {rsvpError && <p style={{ color: 'red' }}>{rsvpError}</p>}
       <InvitationForm
