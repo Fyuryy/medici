@@ -111,7 +111,7 @@ export async function POST(request: Request) {
   Un instant pensé comme une respiration : une parenthèse d’art, de musique et de partage, entre ciel et ville.
 
   Au programme :
-  •⁠  ⁠Une heure de jazz, porté par des musiciens aux doigts d’or,
+  •⁠  ⁠Une heure de jazz, portée par des musiciens aux doigts d’or,
   •⁠  ⁠Une œuvre qui prendra vie sous vos yeux au fil d’une peinture en direct,
   •⁠  ⁠Et enfin, deux heures d’un DJ set pensé pour célébrer la lumière qui s’éteint, jusqu’aux premières lueurs de la nuit.
 
@@ -124,11 +124,12 @@ export async function POST(request: Request) {
   Belle et élégante, à l’image du lieu et de l’instant.
 
   Participation :
-  25.- (tout participation plus élevé est la bienvenue afin de soutenir Medici)
+  25.- (toute participation plus élevée est la bienvenue afin de soutenir Medici)
+  Nourriture et boissons sont compris dans le prix
 
   Important :
   Cet événement est strictement confidentiel. Merci de ne pas en parler autour de vous. Pour des raisons évidentes de discrétion et afin d’éviter toute difficulté avec les autorités, votre présence et celle des autres invités doivent rester privées.
-  Cet événement peut avoir lieu car le locataire des lieux (qui sera présent) met exceptionnellement et gracieusement l’espace à disposition.
+  Cet événement peut avoir lieu car le locataire des lieux ,qui y sera présent met exceptionnellement et gracieusement l’espace à disposition.
 
   Complément
   Suite à votre confirmation, vous serez recontacté·e une semaine avant l’événement afin d’obtenir des informations pratiques concernant l’accès au rooftop ainsi qu’aux mesures de sécurité mises en place sur la Tour.
@@ -165,7 +166,8 @@ const htmlBody = `
      Belle et élégante, à l’image du lieu et de l’instant.</p>
 
   <p><strong>Participation :</strong><br>
-     25 CHF (toute contribution plus élevée est la bienvenue afin de soutenir Medici)</p>
+     25 CHF (toute contribution plus élevée est la bienvenue afin de soutenir Medici)<br>
+     Nourriture et boissons sont compris dans le prix</p>
 
   <p><strong>Important :</strong><br>
      Cet événement est strictement confidentiel. Merci de ne pas en parler autour de vous.<br>
