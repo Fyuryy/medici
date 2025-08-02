@@ -182,7 +182,7 @@ export default function InvitationForm({
             onChange={handleChange}
             className={styles.checkbox}
           />
-          J&apos;accepte etre pris en photo au cours de l&apos;évènement et que
+          J&apos;accepte être pris en photo au cours de l&apos;évènement et que
           ces images soient utilisées à des fins de communication
         </label>
       </div>

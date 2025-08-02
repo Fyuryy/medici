@@ -3,12 +3,20 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import Image from 'next/image'
 import { loadStripe } from '@stripe/stripe-js'
+import { motion, AnimatePresence } from 'framer-motion'
 import InvitationForm, { FormState } from '@/components/InvitationForm'
-import styles from '@/styles/RsvpPage.module.css'
+import Countdown from '@/components/Countdown'
+import splashStyles from '@/styles/HomePage.module.css'
+import formStyles from '@/styles/RsvpPage.module.css'
 
 export default function RSVPPage() {
   const { id } = useParams() as { id: string }
+
+  // splash visibility + fade trigger
+  const [showSplash, setShowSplash] = useState(true)
+  const [fadeSplash, setFadeSplash] = useState(false)
 
   const [invitation, setInvitation] = useState<{
     email: string
@@ -19,7 +27,6 @@ export default function RSVPPage() {
   const [error, setError] = useState('')
   const [rsvpError, setRsvpError] = useState('')
 
-  // our controlled form state
   const [formState, setFormState] = useState<FormState>({
     email: '',
     phone: '',
@@ -29,7 +36,7 @@ export default function RSVPPage() {
     reminder: false,
   })
 
-  // 1) Fetch invitation data
+  // Fetch invitation
   useEffect(() => {
     if (!id) return
     ;(async () => {
@@ -44,7 +51,6 @@ export default function RSVPPage() {
           setError('This invitation has already been used.')
         } else {
           setInvitation(data)
-          // seed email/phone into formState
           setFormState((fs) => ({
             ...fs,
             email: data.email,
@@ -59,23 +65,29 @@ export default function RSVPPage() {
     })()
   }, [id])
 
-  // 2) Rehydrate any saved form-data on mount
+  // Rehydrate form
   useEffect(() => {
     if (!id) return
     const saved = localStorage.getItem(`formData-${id}`)
-    if (saved) {
-      setFormState(JSON.parse(saved))
-    }
+    if (saved) setFormState(JSON.parse(saved))
   }, [id])
 
-  // 3) Handle RSVP -> save, then initiate Stripe Checkout
+  // Trigger fade after 5s
+  useEffect(() => {
+    const timer = setTimeout(() => setFadeSplash(true), 3000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // After fade completes, hide splash
+  const onFadeComplete = () => {
+    if (fadeSplash) setShowSplash(false)
+  }
+
+  // RSVP handler
   const handleRSVP = async (values: FormState) => {
     if (!invitation) return
     setRsvpError('')
-
-    // save for cancel+restore
     localStorage.setItem(`formData-${id}`, JSON.stringify(values))
-
     try {
       const res = await fetch('/api/rsvp', {
         method: 'POST',
@@ -91,7 +103,6 @@ export default function RSVPPage() {
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error)
-
       const stripe = await loadStripe(
         process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
       )
@@ -107,17 +118,61 @@ export default function RSVPPage() {
   if (error) return <p style={{ color: 'red' }}>{error}</p>
 
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto' }}>
-      <h1 className={styles.heading}>
-        Insérez vos données personnelles et procédez au payement
-      </h1>
-      {rsvpError && <p style={{ color: 'red' }}>{rsvpError}</p>}
-      <InvitationForm
-        initialValues={formState}
-        expectedEmail={invitation?.email as string}
-        onChange={setFormState}
-        onSubmit={handleRSVP}
-      />
-    </div>
+    <>
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div
+            className={splashStyles.container}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: fadeSplash ? 0 : 1 }}
+            transition={{ duration: 1 }}
+            onAnimationComplete={onFadeComplete}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          >
+            <div className={splashStyles.logo}>
+              <Image
+                src="/logo_no_bg.png"
+                alt="MEDICI Logo"
+                width={722}
+                height={153}
+                priority
+                sizes="(max-width: 768px) 80vw, 50vw"
+                style={{ width: '100%', height: 'auto' }}
+              />
+            </div>
+            <div className={splashStyles.countdown}>
+              <Countdown date={new Date('2025-08-22T19:00:00')} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {!showSplash && (
+        <div className={formStyles.container}>
+          <h1 className={formStyles.heading}>
+            Insérez vos données personnelles <br /> et procédez au payement
+          </h1>
+          {rsvpError && <p style={{ color: 'red' }}>{rsvpError}</p>}
+          <InvitationForm
+            initialValues={formState}
+            expectedEmail={invitation!.email}
+            onChange={setFormState}
+            onSubmit={handleRSVP}
+          />
+          <Image
+            src="/logo_no_bg.png"
+            alt="MEDICI Logo"
+            width={120}
+            height={25}
+          />
+        </div>
+      )}
+    </>
   )
 }
