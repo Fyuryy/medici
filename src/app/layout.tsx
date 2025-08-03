@@ -25,7 +25,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className={roboto.className}>
-      {/* Next will auto-inject your <title> and <link rel="icon"> here */}
       <head />
       <body>
         <SupabaseProvider>{children}</SupabaseProvider>
