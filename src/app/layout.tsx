@@ -12,11 +12,7 @@ const roboto = Roboto({
 // app/layout.js
 export const metadata = {
   title: 'Medici Studio',
-  icons: {
-    icon: '/LOGO_MEDICI_BLANC.png', 
-    shortcut: '/LOGO_MEDICI_BLANC.png', 
-    apple: '/LOGO_MEDICI_BLANC.png',
-  },
+  icons: [{ rel: 'icon', url: '/LOGO_MEDICI_BLANC.png' }],
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
