@@ -104,8 +104,12 @@ export async function POST(request: NextRequest) {
   const origin = originHeader ?? process.env.NEXT_PUBLIC_BASE_URL!
 
   const sessionParams: Stripe.Checkout.SessionCreateParams = {
-    payment_method_types: ['card'],
-    line_items:          [{ price: priceId, quantity: 1 }],
+    payment_method_types: ['card', 'twint'],
+    line_items:          [{ price_data: {
+        currency: 'chf',
+        product_data: { name: 'Entry ticket' },
+        unit_amount: 2500, // 25 CHF
+      }, quantity: 1 }],
     mode:                'payment',
      success_url:         `${origin}/stripe/success/${invitationId}?session_id={CHECKOUT_SESSION_ID}`,
      cancel_url:          `${origin}/stripe/cancel/${invitationId}`,
