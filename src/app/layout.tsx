@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   // viewport can be a string in Next 13.4+
   viewport: 'width=device-width, initial-scale=1',
   icons: {
-    icon: '/LOGO_MEDICI_BLANC.png', // all modern browsers
-    shortcut: '/LOGO_MEDICI_BLANC.png', // legacy support
-    apple: '/LOGO_MEDICI_BLANC.png', // iOS home-screen
+    icon: '/LOGO_MEDICI_BLANC.ico', // all modern browsers
+    shortcut: '/LOGO_MEDICI_BLANC.ico', // legacy support
+    apple: '/LOGO_MEDICI_BLANC.ico', // iOS home-screen
   },
 }
 
