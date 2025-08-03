@@ -1,7 +1,9 @@
+// app/layout.tsx
 import '../styles/globals.css'
 import { ReactNode } from 'react'
 import { SupabaseProvider } from './providers'
 import { Roboto } from 'next/font/google'
+import { Metadata } from 'next'
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -9,22 +11,24 @@ const roboto = Roboto({
   variable: '--font-roboto',
 })
 
-// app/layout.js
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Medici Studio',
-  icons: [{ rel: 'icon', url: '/LOGO_MEDICI_BLANC.png' }],
+  // viewport can be a string in Next 13.4+
+  viewport: 'width=device-width, initial-scale=1',
+  icons: {
+    icon: '/LOGO_MEDICI_BLANC.png', // all modern browsers
+    shortcut: '/LOGO_MEDICI_BLANC.png', // legacy support
+    apple: '/LOGO_MEDICI_BLANC.png', // iOS home-screen
+  },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className={roboto.className}>
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Inauguration MEDICI</title>
-      </head>
-
+      {/* Next will auto-inject your <title> and <link rel="icon"> here */}
+      <head />
       <body>
-        <SupabaseProvider>{children}</SupabaseProvider>{' '}
+        <SupabaseProvider>{children}</SupabaseProvider>
       </body>
     </html>
   )
