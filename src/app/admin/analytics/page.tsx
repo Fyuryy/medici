@@ -16,8 +16,8 @@ type Ticket = {
   user_id: string | null
   event_id: string | null
   issued_at: string | null
-  ticket_code: string | null
-  invitation_id: string | null
+  // ticket_code removed
+  // invitation_id removed
 }
 
 type User = {
@@ -31,7 +31,7 @@ type Event = { id: string; name: string | null }
 export const dynamic = 'force-dynamic'
 
 export default async function AnalyticsPage() {
-  // 1) Invitations (by email ASC, then newest)
+  // Invitations (by email asc, then newest)
   const { data: invitations, error: invErr } = await supabaseAdmin
     .from('invitations')
     .select('id,email,phone,created_at,used,event_id')
@@ -39,10 +39,10 @@ export default async function AnalyticsPage() {
     .order('created_at', { ascending: false })
     .returns<Invitation[]>()
 
-  // 2) Tickets (all, newest first)
+  // Tickets (newest first) — no ticket_code fetched
   const { data: ticketsRaw, error: tErr } = await supabaseAdmin
     .from('tickets')
-    .select('id,user_id,event_id,issued_at,ticket_code,invitation_id')
+    .select('id,user_id,event_id,issued_at')
     .order('issued_at', { ascending: false })
     .returns<Ticket[]>()
 
@@ -83,7 +83,7 @@ export default async function AnalyticsPage() {
     users?.forEach((u) => (usersById[u.id] = u))
   }
 
-  // Optional: opens per invitation (if invitation_events exists)
+  // Optional opens per invitation
   let opensByInvitation: Record<string, number> | null = null
   try {
     if (invitations?.length) {
@@ -104,11 +104,10 @@ export default async function AnalyticsPage() {
       }
     }
   } catch {
-    // table may not exist; silently skip opens
     opensByInvitation = null
   }
 
-  // Tickets sorted by user name ASC
+  // Decorate & sort tickets by user name
   const tickets = (ticketsRaw ?? [])
     .map((t) => ({
       ...t,
@@ -204,7 +203,6 @@ export default async function AnalyticsPage() {
                   <tr>
                     <th>User</th>
                     <th>Email</th>
-                    <th>Ticket Code</th>
                     <th>Event</th>
                     <th>Issued At</th>
                   </tr>
@@ -214,7 +212,6 @@ export default async function AnalyticsPage() {
                     <tr key={t.id}>
                       <td className={styles.emph}>{t.user?.name ?? '—'}</td>
                       <td>{t.user?.email ?? '—'}</td>
-                      <td className={styles.mono}>{t.ticket_code ?? '—'}</td>
                       <td>{t.event?.name ?? '—'}</td>
                       <td>
                         {t.issued_at
@@ -225,7 +222,7 @@ export default async function AnalyticsPage() {
                   ))}
                   {tickets.length === 0 && (
                     <tr>
-                      <td colSpan={5} className={styles.muted}>
+                      <td colSpan={4} className={styles.muted}>
                         No tickets found.
                       </td>
                     </tr>
