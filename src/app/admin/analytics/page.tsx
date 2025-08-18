@@ -63,7 +63,7 @@ export default async function AnalyticsPage() {
     )
   )
 
-  let eventsById: Record<string, Event> = {}
+  const eventsById: Record<string, Event> = {}
   if (eventIds.length) {
     const { data: events } = await supabaseAdmin
       .from('events')
@@ -73,7 +73,7 @@ export default async function AnalyticsPage() {
     events?.forEach((e) => (eventsById[e.id] = e))
   }
 
-  let usersById: Record<string, User> = {}
+  const usersById: Record<string, User> = {}
   if (userIds.length) {
     const { data: users } = await supabaseAdmin
       .from('users')
