@@ -12,6 +12,7 @@ const navLinks = [
   { href: '/admin', label: 'Home' },
   { href: '/admin/events', label: 'Evénements' },
   { href: '/admin/invitations', label: 'Invitations' },
+  { href: '/admin/tickets', label: 'Billets' },
 ]
 
 export default function AdminLayout({
