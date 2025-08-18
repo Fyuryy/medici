@@ -1,0 +1,149 @@
+/* Use same typography/color as countdown */
+.header,
+.main {
+  font-family: sans-serif;
+  color: rgba(255, 255, 255, 0.92); /* white, slightly transparent */
+}
+
+/* Header (no background bar) */
+.header {
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.brand {
+  font-weight: 700; /* thicker */
+  letter-spacing: 0.04em;
+}
+.links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.link {
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600; /* thicker nav items */
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+  color: inherit;
+}
+.link:hover {
+  opacity: 1;
+}
+.active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  opacity: 1;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+.logoutBtn {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+  color: inherit;
+}
+.logoutBtn:hover {
+  opacity: 1;
+}
+
+/* Main container (acts like the "device" frame) */
+.main {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* center simple pages */
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* When scrolled, add a subtle inset border to hint "screen frame" */
+.scrolled {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 18px 24px -18px rgba(0, 0, 0, 0.45);
+}
+
+/* Edge fades: subtle gradients at edges indicating scrollability */
+.edgeFade {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 60px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  z-index: 10;
+  /* Use current color so it adapts to theme; looks like a light veil on dark bg */
+  mix-blend-mode: screen;
+}
+.visible {
+  opacity: 0.85;
+}
+.bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.18)
+  );
+}
+.top {
+  top: 0;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.18)
+  );
+}
+
+/* Bouncing chevron at bottom center (only when at top and more content below) */
+.scrollCue {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  z-index: 11;
+  pointer-events: none;
+  animation: cue-bounce 1.8s ease-in-out infinite;
+}
+@keyframes cue-bounce {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(6px);
+  }
+}
+.scrollCue.visible {
+  opacity: 0.9;
+}
+
+/* Larger screens */
+@media (min-width: 768px) {
+  .header {
+    padding: 1rem 2rem;
+  }
+  .nav {
+    gap: 1.25rem;
+  }
+  .main {
+    padding: 2rem;
+  }
+}

@@ -1,0 +1,103 @@
+/* Page wrapper */
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font-family: sans-serif; /* same as Countdown */
+  color: rgba(255, 255, 255, 0.92); /* white, slightly transparent */
+
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Content stack */
+.stack {
+  display: grid;
+  gap: 1.25rem;
+  justify-items: center;
+}
+
+/* Titles & placeholders */
+.title {
+  font-size: 1.5rem; /* mobile default */
+  font-weight: 700; /* thicker */
+  letter-spacing: 0.02em;
+}
+
+.placeholder {
+  font-size: 1.125rem;
+  opacity: 0.85; /* a touch lighter */
+  font-style: italic;
+}
+
+.muted {
+  opacity: 0.9;
+}
+
+/* Button group */
+.buttons {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Keep your playful button look (dark outline). 
+   Buttons use their own colors so they remain readable. */
+.btn {
+  appearance: none;
+  border: 2px solid #111;
+  background: #fafafa;
+  color: #111;
+  padding: 0.85rem 1.5rem;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700; /* slightly thicker */
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #111;
+  transition: transform 120ms ease, box-shadow 120ms ease,
+    background-color 120ms ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #111;
+  background-color: #f1f1f1;
+}
+.btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #111;
+}
+.btnWide {
+  min-width: 260px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .buttons {
+    gap: 0.9rem;
+  }
+  .title {
+    font-size: 1.5rem;
+  }
+  .placeholder {
+    font-size: 1.125rem;
+  }
+}
+
+/* Larger screens */
+@media (min-width: 768px) {
+  .title {
+    font-size: 1.875rem;
+  }
+  .placeholder {
+    font-size: 1.25rem;
+  }
+}
