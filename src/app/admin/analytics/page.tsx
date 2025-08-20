@@ -16,8 +16,6 @@ type Ticket = {
   user_id: string | null
   event_id: string | null
   issued_at: string | null
-  // ticket_code removed
-  // invitation_id removed
 }
 
 type User = {
@@ -30,6 +28,17 @@ type Event = { id: string; name: string | null }
 
 export const dynamic = 'force-dynamic'
 
+// Server Action: delete an invitation by id
+async function deleteInvitation(formData: FormData) {
+  'use server'
+  const id = formData.get('id')
+  if (typeof id !== 'string' || !id) return
+  await supabaseAdmin.from('invitations').delete().eq('id', id)
+  // If you want an immediate UI refresh on some setups, you can add:
+  // const { revalidatePath } = await import('next/cache')
+  // revalidatePath('/admin/analytics') // adjust to this page's route if needed
+}
+
 export default async function AnalyticsPage() {
   // Invitations (by email asc, then newest)
   const { data: invitations, error: invErr } = await supabaseAdmin
@@ -39,7 +48,7 @@ export default async function AnalyticsPage() {
     .order('created_at', { ascending: false })
     .returns<Invitation[]>()
 
-  // Tickets (newest first) — no ticket_code fetched
+  // Tickets (newest first)
   const { data: ticketsRaw, error: tErr } = await supabaseAdmin
     .from('tickets')
     .select('id,user_id,event_id,issued_at')
@@ -144,6 +153,7 @@ export default async function AnalyticsPage() {
                     <th>Created</th>
                     <th>Used</th>
                     {showOpens && <th>Opens</th>}
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -174,12 +184,18 @@ export default async function AnalyticsPage() {
                           </span>
                         </td>
                         {showOpens && <td>{opens}</td>}
+                        <td>
+                          <form action={deleteInvitation}>
+                            <input type="hidden" name="id" value={i.id} />
+                            <button type="submit">Delete</button>
+                          </form>
+                        </td>
                       </tr>
                     )
                   })}
                   {(!invitations || invitations.length === 0) && (
                     <tr>
-                      <td colSpan={showOpens ? 6 : 5} className={styles.muted}>
+                      <td colSpan={showOpens ? 7 : 6} className={styles.muted}>
                         No invitations found.
                       </td>
                     </tr>
