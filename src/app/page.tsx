@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import Countdown from '@/components/Countdown'
 import styles from '../styles/HomePage.module.css'
 
@@ -23,6 +24,12 @@ export default function HomePage() {
 
       <div className={styles.countdown}>
         <Countdown date={eventDate} />
+      </div>
+
+      <div className={styles.cta}>
+        <Link href="/rsvp" className={styles.rsvpButton}>
+          Réserver votre place
+        </Link>
       </div>
     </div>
   )

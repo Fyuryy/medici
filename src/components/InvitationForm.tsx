@@ -15,13 +15,14 @@ export interface FormState {
 
 interface InvitationFormProps {
   initialValues?: Partial<FormState>
-  expectedEmail: string
+  expectedEmail?: string
   onChange?: (data: FormState) => void
   onSubmit: (data: FormState) => Promise<void>
 }
 
 export default function InvitationForm({
   initialValues = {},
+  expectedEmail,
   onChange,
   onSubmit,
 }: InvitationFormProps) {
@@ -72,7 +73,6 @@ export default function InvitationForm({
     setSuccessMessage('')
 
     const newErrors: typeof errors = {}
-    // 1) Email must exactly match the invitation email
 
     if (!form.name.trim()) newErrors.name = 'Le nom est requis'
     else if (!/^[A-Za-z\s]+$/.test(form.name))
@@ -82,8 +82,12 @@ export default function InvitationForm({
     else if (calculateAge(form.dob) < 18)
       newErrors.dob = 'Vous devez avoir au moins 18 ans'
 
-    if (form.email && !isValidEmail(form.email))
+    if (!form.email) newErrors.email = "L'email est requis"
+    else if (!isValidEmail(form.email))
       newErrors.email = 'Entrez un email valide'
+    else if (expectedEmail && form.email !== expectedEmail)
+      newErrors.email = "L'email doit correspondre à l'invitation"
+
     if (form.phone && !/^[0-9]+$/.test(form.phone))
       newErrors.phone = 'Le téléphone doit contenir uniquement des chiffres'
 

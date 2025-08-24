@@ -20,6 +20,31 @@
 .countdown {
   font-size: 1.5rem; /* Default for mobile */
   text-align: center; /* Ensures text is centered on all devices */
+  margin-bottom: 2rem;
+}
+
+.cta {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.rsvpButton {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.rsvpButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 /* Mobile-specific adjustments */
@@ -34,6 +59,12 @@
 
   .countdown {
     font-size: 1.25rem; /* Smaller font for mobile */
+    margin-bottom: 1.5rem;
+  }
+
+  .rsvpButton {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
   }
 }
 
