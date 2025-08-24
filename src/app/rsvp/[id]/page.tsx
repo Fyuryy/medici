@@ -11,6 +11,7 @@ import Countdown from '@/components/Countdown'
 import splashStyles from '@/styles/HomePage.module.css'
 import formStyles from '@/styles/RsvpPage.module.css'
 
+
 export default function RSVPPage() {
   const { id } = useParams() as { id: string }
 
