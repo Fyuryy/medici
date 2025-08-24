@@ -11,7 +11,6 @@ import Countdown from '@/components/Countdown'
 import splashStyles from '@/styles/HomePage.module.css'
 import formStyles from '@/styles/RsvpPage.module.css'
 
-
 export default function RSVPPage() {
   const { id } = useParams() as { id: string }
 
@@ -148,7 +147,7 @@ export default function RSVPPage() {
               />
             </div>
             <div className={splashStyles.countdown}>
-              <Countdown date={new Date('2025-08-22T19:00:00')} />
+              <Countdown date={new Date('2025-09-03T17:00:00')} />
             </div>
           </motion.div>
         )}
