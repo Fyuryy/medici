@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
   // 3) Bind this invitation to the submitted email (override placeholders or legacy values)
   try {
-    await attachFormToInvitation(invitationId, {
+    await attachFormToInvitation(invitationId as string, {
       email: providedEmail,
       phone: phone ?? invite.phone ?? '',
     })
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
     success_url: `${origin}/stripe/success/${invitationId}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/stripe/cancel/${invitationId}`,
     metadata: {
-      invitation_id: invitationId,
+      invitation_id: invitationId as string,
       rsvp_id: String(rsvp.id),
       user_id: String(user.id),
       email: providedEmail,        // consistent with the bound invite

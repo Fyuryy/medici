@@ -22,7 +22,6 @@ interface InvitationFormProps {
 
 export default function InvitationForm({
   initialValues = {},
-  expectedEmail,
   onChange,
   onSubmit,
 }: InvitationFormProps) {
