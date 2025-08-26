@@ -26,7 +26,7 @@ export default function PublicRSVPPage() {
 
   // Trigger fade after 5s
   useEffect(() => {
-    const timer = setTimeout(() => setFadeSplash(true), 4500)
+    const timer = setTimeout(() => setFadeSplash(true), 2500)
     return () => clearTimeout(timer)
   }, [])
 
