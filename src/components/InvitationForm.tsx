@@ -88,7 +88,8 @@ export default function InvitationForm({
     else if (expectedEmail && form.email !== expectedEmail)
       newErrors.email = "L'email doit correspondre à l'invitation"
 
-    if (form.phone && !/^[0-9]+$/.test(form.phone))
+    if (!form.phone) newErrors.phone = 'Le téléphone est requis'
+    else if (!/^[0-9]+$/.test(form.phone))
       newErrors.phone = 'Le téléphone doit contenir uniquement des chiffres'
 
     if (Object.keys(newErrors).length) {
@@ -160,7 +161,7 @@ export default function InvitationForm({
 
       <div className={styles.formGroup}>
         <label htmlFor="phone" className={styles.label}>
-          Téléphone (optionnel)
+          Téléphone <span className={styles.required}>*</span>
         </label>
         <input
           id="phone"

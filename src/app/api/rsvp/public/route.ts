@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
   if (!name) missing.push('name')
   if (!birthdate) missing.push('birthdate')
   if (!emailRaw) missing.push('email')
+  if (!phone) missing.push('phone')
   if (missing.length) {
     return NextResponse.json(
       { error: `Missing required fields: ${missing.join(', ')}` },
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest) {
     .insert({
       id: invitationId,
       email: providedEmail,
-      phone: phone || null,
+      phone: phone,
       event_id: process.env.NEXT_PUBLIC_EVENT_ID,
       used: false,
     })
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
       rsvp_id: invitationId,
       name,
       email: providedEmail,
-      phone: phone || null,
+      phone: phone,
       date_of_birth: birthdate,
     })
     .select('id')
